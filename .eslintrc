@@ -1,0 +1,27 @@
+{
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "rules": {
+    "class-methods-use-this": ["off"],
+    "consistent-return": ["off"],
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+    "import/no-unresolved": "off",
+    "import/extensions": "off",
+    "indent": ["error", 4, {"SwitchCase": 1}],
+    "max-len": ["error", {"code": 120, "ignoreComments": true}],
+    "no-console": ["off"],
+    "no-continue": ["off"],
+    "no-irregular-whitespace": ["error", {"skipComments": true}],
+    "no-mixed-operators": ["error", {"allowSamePrecedence": true}],
+    "no-shadow": ["error", {"allow": ["err"]}],
+    "no-param-reassign": ["error", {"props": false}],
+    "no-plusplus": ["off"],
+    "no-underscore-dangle": ["off"],
+    "no-use-before-define": ["off"],
+    "no-unused-expressions": ["error", {"allowShortCircuit": true}],
+    "semi": ["error", "always", {"omitLastInOneLineBlock": true}]
+  },
+  "env": {
+    "node": true
+  }
+}

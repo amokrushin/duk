@@ -1,0 +1,37 @@
+{
+  "name": "duk",
+  "version": "0.1.0",
+  "description": "File uploading and processing service",
+  "keywords": [
+    "uploads"
+  ],
+  "license": "MIT",
+  "author": "Anton Mokrushin <anton@mokr.org> (http://mokr.org/)",
+  "files": [
+    "lib",
+    "index.js"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "dev-down": "docker-compose -f docker-compose.dev.yml down",
+    "dev-logs": "docker-compose -f docker-compose.dev.yml logs -f duk-upload duk-image-transform duk-store",
+    "dev-up": "docker-compose -f docker-compose.dev.yml up -d",
+    "test": "iamtest -r spec"
+  },
+  "dependencies": {
+    "bs58": "^4.0.1",
+    "concat-stream": "^1.6.0",
+    "duplexify": "^3.5.0",
+    "pegjs": "^0.10.0"
+  },
+  "devDependencies": {
+    "form-data": "^2.1.4",
+    "iamtest": "^1.5.3",
+    "probe-image-size": "^3.0.0",
+    "stream-meter": "^1.0.4",
+    "tape": "^4.6.3"
+  },
+  "engines": {
+    "node": ">=6"
+  }
+}
