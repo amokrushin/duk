@@ -1,0 +1,16 @@
+{
+  "name": "duk-upload",
+  "version": "0.1.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Anton Mokrushin <anton@mokr.org> (mokr.org)",
+  "license": "MIT",
+  "dependencies": {
+    "duk": "^0.1.0",
+    "lodash.omit": "^4.5.0",
+    "stream-multipart-upload": "^0.4.6"
+  }
+}

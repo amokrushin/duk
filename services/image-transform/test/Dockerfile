@@ -1,0 +1,15 @@
+FROM anmok/node-slim-sharp
+
+COPY ../package.json ../yarn.lock /srv/app/
+
+RUN cd /srv/app \
+    && yarn install \
+    && yarn link sharp
+
+COPY .. /srv/app
+
+RUN yarn test
+
+WORKDIR /srv/app
+
+CMD ["npm", "start"]

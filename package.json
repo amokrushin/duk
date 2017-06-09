@@ -13,10 +13,16 @@
   ],
   "main": "index.js",
   "scripts": {
-    "dev-down": "docker-compose -f docker-compose.dev.yml down",
-    "dev-logs": "docker-compose -f docker-compose.dev.yml logs -f duk-upload duk-image-transform duk-store",
-    "dev-up": "docker-compose -f docker-compose.dev.yml up -d",
-    "test": "iamtest -r spec"
+    "start": "docker-compose up -d",
+    "stop": "docker-compose down",
+    "build": "docker-compose build",
+    "logs": "docker-compose logs -f --tail=10 upload image-transform store",
+    "dev-start": "docker-compose -f docker-compose.dev.yml up -d",
+    "dev-stop": "docker-compose -f docker-compose.dev.yml down",
+    "dev-build": "docker-compose -f docker-compose.dev.yml build",
+    "dev-logs": "docker-compose -f docker-compose.dev.yml logs -f --tail=10 upload image-transform store",
+    "test": "iamtest -r spec",
+    "postinstall": "node postinstall.js"
   },
   "dependencies": {
     "bs58": "^4.0.1",

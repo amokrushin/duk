@@ -1,0 +1,10 @@
+{
+  "name": "duk-task-queue",
+  "version": "0.1.0",
+  "main": "lib/TransformTaskQueue.js",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.4.1",
+    "redis": "^2.7.1"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "duk-amqp",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "iamtest -r spec",
+    "docker-rabbit-start": "docker run --rm --name duk-rabbit --expose 5672 -d rabbitmq:alpine",
+    "docker-rabbit-stop": "docker stop duk-rabbit",
+    "docker-test": "docker run -it --rm --name duk-amqp-test -v `pwd`:/app -w /app --link duk-rabbit node:8-alpine npm t"
+  },
+  "dependencies": {
+    "amqplib": "^0.5.1",
+    "async": "^2.4.1",
+    "lodash.defaultsdeep": "^4.6.0",
+    "lodash.map": "^4.6.0"
+  },
+  "devDependencies": {
+    "get-port": "^3.1.0",
+    "iamtest": "^1.5.3",
+    "lodash.pick": "^4.4.0",
+    "sinon": "^2.3.2",
+    "tape": "^4.6.3",
+    "tape-async": "^2.3.0"
+  }
+}

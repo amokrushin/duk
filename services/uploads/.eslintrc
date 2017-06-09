@@ -2,6 +2,17 @@
   "parser": "babel-eslint",
   "extends": "airbnb",
   "rules": {
+    "class-methods-use-this": ["off"],
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "ignore"
+      }
+    ],
     "consistent-return": ["off"],
     "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
     "import/no-unresolved": "off",
@@ -18,9 +29,14 @@
     "no-underscore-dangle": ["off"],
     "no-use-before-define": ["off"],
     "no-unused-expressions": ["error", {"allowShortCircuit": true}],
-    "semi": ["error", "always", {"omitLastInOneLineBlock": true}]
+    "semi": ["error", "always", {"omitLastInOneLineBlock": true}],
+    "flowtype/define-flow-type": 1,
+    "flowtype/use-flow-type": 1
   },
   "env": {
     "node": true
-  }
+  },
+  "plugins": [
+    "flowtype"
+  ]
 }
