@@ -1,17 +1,20 @@
+sudo: required
+services:
+  - docker
 language: node_js
 os: linux
 cache: yarn
 node_js:
   - stable
-after_success:
-  - yarn add codecov
-  - "./node_modules/.bin/iamtest -c lcovonly && ./node_modules/.bin/codecov"
-  - yarn remove codecov
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
+  - docker-compose up -d
 deploy:
   provider: npm
   email: anton@mokr.org
   api_key:
-    secure: ZEz4jEvfOwVCB7A7hoOASRtSHiozOjUPfCYq0/SMQVfUoTUInZZQNrw0qb4wpnJdZ0UHG4o6tFtEkMHZfcCa7rYLl74FsfCuI4OF9QbuMUGW9jdYsMPE36GUd2h4eMKG+xMNN0HHwEUGiy3MP4xeFNkORj+J5B6aeMtSvkAdQT0sSBJPwp3MaCi+njp1WG/D5IOBgLvzhWAz4DyM4HIoh+H8GVjkh2DK7Tki1ZMeDuJBfhD3fmaeXYS2GF4h8sZswOKMVsYFv4F/a6UPj8R2YpcV77LqTX5PujNgWKGwaxmFyDHp+FlziBEsUWwOGx4NSe1NMq7jI2+S+U2gB0I31Vhq1NlXpgC9z2xv8odcEUdjR3k9eSqvCgX+NGY7JXOOZvHo9NVNzUqJAFCmRUs3UgFY1vwFQ/tieQ1PpN8UOLULjhbhCksIRDoz0R1xjHEVwCgo9QT0Vdv4mv8tKrjJ5GXah5YqwnTr868waytdADQZ1swC3M2b01HCVFRUtoFSOASVmr2dd/c+Buo2wTT0ns8VkjY2UfE4sBIZ6T+XJegThr00YNnTerbLMaw1OyvxUTDLY+tLBr+CqJDIaNiMU6rKSAM+tWswta/fH/h5swy6TDdRcsAfsca4FAjkiE/98dLZPic6FlFGCp/8QGCOaSlUrBzHDVXVQjZbZe9ccKA=
+    secure: DzU1C97r5S1r9Y+coLwbIs8MqUfuz6jR3tga32dnWvlebSMu+ZolydFzWC6XQYwbegMuivrwO+/nyzzKQwr4Vg1GV47O/+A+nhQBCTQbh6XVBUtXYQPjcdi/UeRTpzChzq1vXISimDo42D/2Mnj2KT+duOyBbke6EsSzdrHJCBgJN2mwy55t2Ua3WYlWQNMmfoMO6ZWHS6TzeZotkzS7ECqj1ZuAqykeo54HIJzycf8svh8LLMrdoPUvyzH/+O49z+D0b4AfHTZ+3QiU1O12lG9JhqVgg1GZqa9lUXAgJmPJ/t/qN0up/CTsvBodbSfR3hTep7u3z3xtiKuAdKE7uYg3vZEkCkvhKXrUKRWS5vDx9GVBxo26rUjUbJja78tiO6gQZVduzYP7mCgYzM6G2ICLp422Nyd5X/7anoUwcbPEMmghPZJPVqz/C5jqDDfz4Wg38Do4Z7mOuzUZLfBPUabtClcawOhObDAye2FUGRuOv58uOKeDufSpqRAiJu1X6N70zQmTo4hZ2AQ9OlMBofgpnfjOBqKMXKx7I047RCKI/si53VPQX6WbIW8lOU190BR2BkZcqL68yHiPEBeWAQXZ/RRkJFppDhM0R7Lfjeb/rZ58rDKZU8imPDGcAGaIs/l33h9elr1ak3W2C4dVptWqgSiIn47tl3Z0trgDYrA=
   on:
     tags: true
-    repo: amokrushin/iampool
+    repo: amokrushin/duk
