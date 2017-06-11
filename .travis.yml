@@ -8,17 +8,6 @@ node_js:
   - stable
 env:
   DOCKER_COMPOSE_VERSION: 1.13.0
-  PORT: 8081
-  DUK_ORIGIN: http://front
-  DUK_STORE_DIR: /srv/duk/store
-  DUK_URL_SIGNING_KEY: travis
-  RABBITMQ_USER: travis
-  RABBITMQ_PASS: travis
-  RABBITMQ_PORT: 5672
-  REDIS_HOST: redis
-  REDIS_PORT: 6379
-  REDIS_PASS: travis
-  REDIS_DB: 0
 before_install:
   - sudo apt-get update
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
