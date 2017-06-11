@@ -31,6 +31,8 @@
     "pegjs": "^0.10.0"
   },
   "devDependencies": {
+    "async": "^2.4.1",
+    "dotenv": "^4.0.0",
     "form-data": "^2.1.4",
     "iamtest": "^1.5.3",
     "probe-image-size": "^3.0.0",
