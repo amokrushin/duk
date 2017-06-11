@@ -17,10 +17,10 @@ const HttpPut = require('./lib/HttpPut');
 const StorageTempLocalCleanup = require('./lib/StorageTempLocalCleanup');
 
 const {
-    DUK_ORIGIN,
-    DUK_UPLOAD_PORT,
-    DUK_STORE_BASE_URL,
-    DUK_UPLOAD_EXTENSION_EXIFTOOL,
+    DUK_ORIGIN = 'http://front',
+    DUK_UPLOAD_PORT = 80,
+    DUK_STORE_BASE_URL = '/store',
+    DUK_UPLOAD_EXTENSION_EXIFTOOL = 1,
     DUK_URL_SIGNING_KEY,
 } = process.env;
 const { assign } = Object;
