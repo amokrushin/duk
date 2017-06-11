@@ -7,12 +7,11 @@ RUN    apt-get update \
          make \
          gcc \
          g++ \
-         python
-
-RUN    cd /srv/app \
+         python \
+    && cd /srv/app \
     && yarn install --production \
     && yarn cache clean \
-    && apt-get remove --purge -y \
+    && apt-get remove --purge -y --force-yes \
          make \
          gcc \
          g++ \
