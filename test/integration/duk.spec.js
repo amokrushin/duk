@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const test = require('tape');
 const fs = require('fs');
 const path = require('path');
@@ -8,6 +6,10 @@ const { request, ResourceUrl } = require('../..');
 const meter = require('stream-meter');
 const probe = require('probe-image-size');
 const async = require('async');
+
+if (!process.env.TRAVIS) {
+    require('dotenv').config();
+}
 
 const {
     PORT,
