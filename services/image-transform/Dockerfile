@@ -25,6 +25,7 @@ RUN    cd /srv/app \
 COPY . /srv/app
 
 RUN    cd /srv/app/shared/duk-task-queue \
+    && yarn \
     && yarn link \
     && cd /srv/app \
     && yarn link duk-task-queue
