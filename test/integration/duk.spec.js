@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const test = require('tape');
 const fs = require('fs');
 const path = require('path');
@@ -7,10 +9,16 @@ const meter = require('stream-meter');
 const probe = require('probe-image-size');
 const async = require('async');
 
-const ORIGIN = 'http://localhost:8081';
-const UPLOAD_ENDPOINT = `${ORIGIN}/upload`;
-const STORE_ENDPOINT = `${ORIGIN}/store`;
-const DUK_URL_SIGNING_KEY = '5SMIQOMOAmpQ1tdwttUsuD9RHa9hdFG';
+const {
+    PORT,
+    DUK_URL_SIGNING_KEY,
+    DUK_STORE_BASE_URL = '/store',
+    DUK_UPLOAD_BASE_URL = '/upload',
+} = process.env;
+
+const FRONT_ORIGIN = `http://localhost:${PORT}`;
+const STORE_ENDPOINT = `${FRONT_ORIGIN}${DUK_STORE_BASE_URL}`;
+const UPLOAD_ENDPOINT = `${FRONT_ORIGIN}${DUK_UPLOAD_BASE_URL}`;
 
 ResourceUrl.hmacKey = DUK_URL_SIGNING_KEY;
 ResourceUrl.baseUrl = STORE_ENDPOINT;
