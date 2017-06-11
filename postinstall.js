@@ -5,5 +5,11 @@ const path = require('path');
 
 const opts = cwd => ({ stdio: 'inherit', cwd: path.join(__dirname, cwd) });
 
-execSync('yarn link duk-task-queue', opts('services/store'));
-execSync('yarn link duk-task-queue', opts('shared/duk-task-queue'));
+if (process.env.NODE_ENV !== 'production') {
+    execSync('yarn', opts('services/image-transform'));
+    execSync('yarn', opts('services/store'));
+    execSync('yarn', opts('services/uploads'));
+    execSync('yarn', opts('shared/duk-task-queue'));
+    execSync('yarn link duk-task-queue', opts('services/store'));
+    execSync('yarn link duk-task-queue', opts('shared/duk-task-queue'));
+}
