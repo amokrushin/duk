@@ -7,8 +7,9 @@ RUN    apt-get update \
          make \
          gcc \
          g++ \
-         python \
-    && cd /srv/app \
+         python
+
+RUN    cd /srv/app \
     && yarn install --production \
     && yarn cache clean \
     && apt-get remove --purge -y \
