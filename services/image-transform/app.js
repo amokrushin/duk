@@ -1,6 +1,6 @@
 const sharp = require('sharp');
 const mime = require('mime');
-const TransformTaskQueue = require('duk-task-queue');
+const { TransformTaskSubscriber } = require('duk-task-queue');
 const request = require('./lib/request');
 const { SharpError, InvalidContentTypeError } = require('./lib/errors');
 const { inspect } = require('util');
@@ -22,20 +22,18 @@ console.info('[PROCESS]', {
 
 sharp.cache(false);
 
-const taskQueue = new TransformTaskQueue({
-    role: 'worker',
+const taskQueue = new TransformTaskSubscriber({
     amqpUrl: AMQP_URL,
     redisUrl: REDIS_URL,
     maxAttempts: TASK_ATTEMPTS_MAX,
     logger: console,
+    taskHandler,
 });
 
 taskQueue.on('error', (err) => {
     console.error('TASK QUEUE', 'error', '\n', err);
     process.exit(1);
 });
-
-taskQueue.addWorker(taskHandler);
 
 async function taskHandler(task, cb) {
     const srcStream = await request.get(task.src, { headers: { Accept: 'image/*' } });

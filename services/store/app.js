@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const http = require('http');
-const TransformTaskQueue = require('duk-task-queue');
+const { TransformTaskPublisher } = require('duk-task-queue');
 const { inspect } = require('util');
 const {
     logStart,
@@ -31,11 +31,9 @@ const {
     REDIS_URL,
 } = process.env;
 
-const taskQueue = new TransformTaskQueue({
-    role: 'publisher',
+const taskQueue = new TransformTaskPublisher({
     amqpUrl: AMQP_URL,
     redisUrl: REDIS_URL,
-    // maxAttempts: TASK_ATTEMPTS_MAX,
 });
 
 taskQueue.on('error', (err) => {

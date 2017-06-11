@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const { AmqpClient } = require('duk-amqp');
+const AmqpClient = require('rmqp');
 const async = require('async');
 const redis = require('redis');
 const { inspect } = require('util');
@@ -11,24 +11,10 @@ const AMQP_NACK_NO_REQUEUE = false;
 function noop() {}
 
 class TransformTaskQueue extends EventEmitter {
-    /**
-     * @param settings
-     * @param {'publisher'|'worker'} [settings.role = 'publisher']
-     * @param {string} settings.amqpUrl
-     * @param {string} settings.redisUrl
-     * @param {string} [settings.amqpTaskQueue]
-     * @param {string} [settings.amqpTaskStatusExchange]
-     * @param {string} [settings.amqpTaskStatusReadyKey]
-     * @param {string} [settings.redisTaskAttemptsKey]
-     * @param {string} [settings.maxAttempts = 3]
-     * @param {boolean} [settings.printLogs = true]
-     * @param {Object} [settings.logger = console]
-     */
     constructor(settings) {
         super();
 
         this._settings = {
-            role: settings.role || 'publisher',
             amqpUrl: settings.amqpUrl,
             redisUrl: settings.redisUrl,
             amqpTaskQueue: settings.amqpTaskQueue || 'task-queue',
@@ -40,41 +26,111 @@ class TransformTaskQueue extends EventEmitter {
             logger: settings.logger || console,
         };
 
-        if (settings.printLogs) {
-            log(this, settings.logger);
-        }
-
         this._redisInit();
         this._amqpInit();
     }
 
-    /**
-     * @param {function(task: Object)} taskHandler
-     * @param cb
-     * @returns {{cancel: (function(*))}}
-     */
-    addWorker(taskHandler, cb = noop) {
-        if (typeof taskHandler !== 'function') {
-            throw new Error('Task handler must be a function');
+    _redisInit() {
+        const { redisUrl } = this._settings;
+
+        const redisClient = redis.createClient({ url: redisUrl })
+            .once('ready', () => {
+                this.emit('redis.ready');
+            })
+            .on('error', (err) => {
+                this.emit('redis.error', err);
+                this.emit('error', err);
+            });
+
+        this._redisClient = redisClient;
+    }
+
+    _amqpInit() {
+        const { amqpUrl, amqpTaskQueue, amqpTaskStatusExchange } = this._settings;
+
+        const amqpClient = new AmqpClient({ url: amqpUrl })
+            .once('ready', () => {
+                this.emit('amqp.ready');
+            })
+            .on('error', (err) => {
+                this.emit('amqp.error', err);
+                this.emit('error', err);
+            });
+
+        amqpClient.assertQueue(amqpTaskQueue, {});
+        amqpClient.assertExchange(amqpTaskStatusExchange, 'fanout', { durable: false });
+
+        this._amqpClient = amqpClient;
+    }
+
+    close(cb) {
+        this.removeAllListeners('ready');
+        this.removeAllListeners('amqp.ready');
+        this.removeAllListeners('redis.ready');
+        async.parallel([
+            c => this._amqpClient.close(c),
+            c => this._redisClient.quit(c),
+        ], cb);
+    }
+}
+
+/**
+ * @param settings
+ * @param {string} settings.amqpUrl
+ * @param {string} settings.redisUrl
+ * @param {string} [settings.amqpTaskQueue]
+ * @param {string} [settings.amqpTaskStatusExchange]
+ * @param {string} [settings.amqpTaskStatusReadyKey]
+ * @param {string} [settings.redisTaskAttemptsKey]
+ * @param {string} [settings.maxAttempts = 3]
+ * @param {boolean} [settings.printLogs = true]
+ * @param {Object} [settings.logger = console]
+ */
+class TransformTaskPublisher extends TransformTaskQueue {
+    constructor(settings) {
+        super(settings);
+
+        /**
+         * @type {?stream.Writable}
+         * @private
+         */
+        this._taskStream = null;
+
+        const {
+            amqpTaskQueue,
+            amqpTaskStatusExchange,
+            amqpTaskStatusReadyKey,
+            printLogs,
+            logger,
+        } = this._settings;
+
+        this.once('amqp.ready', () => {
+            this._taskStream = this._amqpClient.publisher(
+                amqpTaskQueue,
+                { contentType: 'application/json' },
+            );
+
+            this._taskStatusStream = this._amqpClient.subscriber(
+                amqpTaskStatusExchange,
+                amqpTaskStatusReadyKey,
+                { noAck: true },
+            );
+
+            this._taskStatusStream.on('data', (message) => {
+                const task = message.content;
+                this.emit('task.done', task);
+                this.emit(`task.done.${task.id}`, task);
+            });
+        });
+
+        this.once('close', () => {
+            this._taskStream.end();
+            this._taskStatusStream.close();
+        });
+
+        if (printLogs) {
+            log(this, logger);
         }
-        const { amqpTaskQueue } = this._settings;
-        return this._amqpClient.consume(
-            this._settings.amqpTaskQueue,
-            this._onTaskMessage.bind(this, taskHandler),
-            {
-                prefetch: 1,
-                noAck: false,
-            },
-            (err) => {
-                if (err && cb) {
-                    cb(err);
-                } else if (err) {
-                    this.emit('error', err);
-                } else {
-                    this.emit('amqp.consume', amqpTaskQueue);
-                }
-            },
-        );
     }
 
     /**
@@ -83,6 +139,7 @@ class TransformTaskQueue extends EventEmitter {
      */
     enqueue(task, cb) {
         const { amqpTaskQueue } = this._settings;
+
         async.waterfall([
             async.constant({
                 lockSet: false,
@@ -102,16 +159,12 @@ class TransformTaskQueue extends EventEmitter {
             (ctx, next) => {
                 if (ctx.lockSet) {
                     this.emit('task.enqueue', amqpTaskQueue, task);
-                    const message = JSON.stringify(task);
-                    this._amqpClient.sendToQueue(this._settings.amqpTaskQueue, message, (err) => {
-                        next(err, ctx);
-                    });
-                } else {
-                    next(null, ctx);
+                    this._taskStream.write(task);
                 }
+                next(null, ctx);
             },
             (ctx, next) => {
-                this.wait(task, (err) => {
+                this._waitTaskReadyStatus(task, (err) => {
                     next(err, ctx);
                 });
             },
@@ -128,39 +181,11 @@ class TransformTaskQueue extends EventEmitter {
         ], cb);
     }
 
-    _redisInit() {
-        this._redisClient = redis.createClient({ url: this._settings.redisUrl })
-            .once('ready', () => {
-                this.emit('redis.ready');
-            })
-            .on('error', (err) => {
-                this.emit('redis.error', err);
-                this.emit('error', err);
-            });
-    }
-
-    _amqpInit() {
-        this._amqpClient = new AmqpClient({ url: this._settings.amqpUrl })
-            .once('ready', () => {
-                this.emit('amqp.ready');
-            })
-            .on('error', (err) => {
-                this.emit('amqp.error', err);
-                this.emit('error', err);
-            });
-
-        this._amqpClient.assertQueue(this._settings.amqpTaskQueue, {});
-
-        if (this._settings.role === 'publisher') {
-            this._listenTaskStatusUpdates();
-        }
-    }
-
     /**
      * @param {Object} task
      * @param {function} cb
      */
-    wait(task, cb) {
+    _waitTaskReadyStatus(task, cb) {
         this.emit('task.wait', task);
         async.timeout(
             c => this.once(`task.done.${task.id}`, () => c()),
@@ -172,39 +197,6 @@ class TransformTaskQueue extends EventEmitter {
                 cb(err);
             }
         });
-    }
-
-    _listenTaskStatusUpdates() {
-        const { amqpTaskStatusExchange, amqpTaskStatusReadyKey } = this._settings;
-        this._amqpClient.assertExchange(amqpTaskStatusExchange, 'fanout', { durable: false });
-        this._amqpClient.assertQueue('', { exclusive: true }, (err, q) => {
-            this._amqpClient.bindQueue(q.queue, amqpTaskStatusExchange, amqpTaskStatusReadyKey);
-            this._amqpClient.consume(
-                q.queue,
-                this._onTaskMessageStatusUpdateMessage.bind(this, q.queue),
-                { noAck: true },
-                (err) => {
-                    if (err) {
-                        this.emit('error', err);
-                    } else {
-                        this.emit('amqp.consume', q.queue);
-                    }
-                },
-            );
-        });
-    }
-
-    _onTaskMessageStatusUpdateMessage(queue, message) {
-        this.emit('amqp.message', queue);
-        let task;
-        try {
-            task = JSON.parse(message.content);
-        } catch (err) {
-            // TODO: error?
-            this.emit('error', new InvalidTask());
-        }
-        this.emit('task.done', task);
-        this.emit(`task.done.${task.id}`, task);
     }
 
     _redisTaskLockSet(task, cb) {
@@ -234,33 +226,70 @@ class TransformTaskQueue extends EventEmitter {
             }
         });
     }
+}
 
-    _redisTaskAttemptsCounterIncr(task, cb) {
-        this._redisClient.hincrbyfloat(this._settings.redisTaskAttemptsKey, task.id, 1, (err, attempt) => {
-            if (err) {
-                cb(new RedisError(err.message));
-            } else if (!Number(attempt)) {
-                cb(new Error(`Invalid attempt value: ${attempt}`));
-            } else {
-                cb(null, attempt);
-            }
+/**
+ * @param settings
+ * @param {string} settings.amqpUrl
+ * @param {string} settings.redisUrl
+ * @param {function} settings.taskHandler
+ * @param {string} [settings.amqpTaskQueue]
+ * @param {string} [settings.amqpTaskStatusExchange]
+ * @param {string} [settings.amqpTaskStatusReadyKey]
+ * @param {string} [settings.redisTaskAttemptsKey]
+ * @param {string} [settings.maxAttempts = 3]
+ * @param {boolean} [settings.printLogs = true]
+ * @param {Object} [settings.logger = console]
+ */
+class TransformTaskSubscriber extends TransformTaskQueue {
+    constructor(settings) {
+        super(settings);
+
+        this._settings.taskHandler = settings.taskHandler;
+
+        const {
+            taskHandler,
+            amqpTaskQueue,
+            amqpTaskStatusExchange,
+            amqpTaskStatusReadyKey,
+            printLogs,
+            logger,
+        } = this._settings;
+
+        if (typeof taskHandler !== 'function') {
+            throw new Error('Task handler must be a function');
+        }
+
+        this.once('amqp.ready', () => {
+            this._taskStream = this._amqpClient.subscriber(amqpTaskQueue, { noAck: false, prefetch: 1 })
+                .on('data', (message) => {
+                    this._onTaskMessage(taskHandler, message);
+                })
+                .on('error', (err) => {
+                    this.emit('error', err);
+                });
+
+            this._taskStatusStream = this._amqpClient.publisher(
+                amqpTaskStatusExchange,
+                amqpTaskStatusReadyKey,
+                { contentType: 'application/json' },
+            );
         });
-    }
 
-    _redisTaskAttemptsCounterReset(task, cb) {
-        this._redisClient.hdel(this._settings.redisTaskAttemptsKey, task.id, cb || noop);
+        this.once('close', () => {
+            this._taskStatusStream.end();
+            this._taskStream.close();
+        });
+
+        if (printLogs) {
+            log(this, logger);
+        }
     }
 
     _onTaskMessage(taskHandler, message) {
         const { amqpTaskQueue } = this._settings;
-        let task;
-        try {
-            task = JSON.parse(message.content.toString());
-        } catch (err) {
-            message.nack(AMQP_NACK_NO_REQUEUE);
-            this.emit('error', new InvalidTask(err.message));
-        }
-        if (!task.id) {
+        const task = message.content;
+        if (!task || !task.id) {
             message.nack(AMQP_NACK_NO_REQUEUE);
             this.emit('task.nack', amqpTaskQueue, task);
             this.emit('error', new InvalidTask('Task `id` required'));
@@ -276,7 +305,7 @@ class TransformTaskQueue extends EventEmitter {
             } else {
                 taskHandler(task, (err) => {
                     if (err) {
-                        if (attempt < this._settings.amqpUrl && !err.unrecoverable) {
+                        if (attempt < this._settings.maxAttempts && !err.unrecoverable) {
                             message.nack(AMQP_NACK_REQUEUE);
                             this.emit('task.nack', amqpTaskQueue, task);
                             this.emit('task.error', err, task);
@@ -290,7 +319,7 @@ class TransformTaskQueue extends EventEmitter {
                     } else {
                         this.emit('task.ack', amqpTaskQueue, task);
                         this._redisTaskAttemptsCounterReset(task);
-                        this._publishTaskReadyEvent(task);
+                        this._taskStatusStream.write(task);
                         message.ack();
                     }
                 });
@@ -298,20 +327,20 @@ class TransformTaskQueue extends EventEmitter {
         });
     }
 
-    _publishTaskReadyEvent(task) {
-        this._amqpClient.publish(
-            this._settings.amqpTaskStatusExchange,
-            this._settings.amqpTaskStatusReadyKey,
-            JSON.stringify(task),
-        );
+    _redisTaskAttemptsCounterIncr(task, cb) {
+        this._redisClient.hincrbyfloat(this._settings.redisTaskAttemptsKey, task.id, 1, (err, attempt) => {
+            if (err) {
+                cb(new RedisError(err.message));
+            } else if (!Number(attempt)) {
+                cb(new Error(`Invalid attempt value: ${attempt}`));
+            } else {
+                cb(null, attempt);
+            }
+        });
     }
 
-    close(cb) {
-        this.removeAllListeners('ready');
-        async.parallel([
-            c => this._amqpClient.close(c),
-            c => this._redisClient.quit(c),
-        ], cb);
+    _redisTaskAttemptsCounterReset(task, cb) {
+        this._redisClient.hdel(this._settings.redisTaskAttemptsKey, task.id, cb || noop);
     }
 }
 
@@ -369,4 +398,7 @@ function log(taskQueue, logger) {
         });
 }
 
-module.exports = TransformTaskQueue;
+module.exports = {
+    TransformTaskPublisher,
+    TransformTaskSubscriber,
+};
