@@ -19,7 +19,6 @@ services:
       - .env
     ports:
       - "${RABBITMQ_PORT}:5672"
-      - "${RABBITMQ_MANAGEMENT_PORT}:15672"
     expose:
       - "5672"
     environment:
