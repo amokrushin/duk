@@ -25,7 +25,7 @@ const {
     DUK_STORE_PORT = 80,
     DUK_STORE_DIR,
     DUK_STORE_TEMP_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'duk-')),
-    DUK_STORE_BASE_URL = '/storage',
+    DUK_STORE_BASE_URL = '/store',
     DUK_URL_SIGNING_KEY,
     AMQP_URL,
     REDIS_URL,
