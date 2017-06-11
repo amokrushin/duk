@@ -23,8 +23,8 @@ services:
     expose:
       - "5672"
     environment:
-      - RABBITMQ_DEFAULT_USER=${AMQP_USER}
-      - RABBITMQ_DEFAULT_PASS=${AMQP_PASS}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
     networks:
       - duk-network
     restart: unless-stopped
@@ -50,7 +50,7 @@ services:
     expose:
       - "80"
     environment:
-      - AMQP_URL=amqp://${AMQP_USER}:${AMQP_PASS}@rabbitmq/${AMQP_VHOST}
+      - AMQP_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq/${RABBITMQ_VHOST}
       - REDIS_URL=redis://:${REDIS_PASS}@redis/${REDIS_DB}
     volumes:
       - .:/app:ro
@@ -85,7 +85,7 @@ services:
     env_file:
       - .env
     environment:
-      - AMQP_URL=amqp://${AMQP_USER}:${AMQP_PASS}@rabbitmq/${AMQP_VHOST}
+      - AMQP_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq/${RABBITMQ_VHOST}
       - REDIS_URL=redis://:${REDIS_PASS}@redis/${REDIS_DB}
     volumes:
       - .:/app:ro
