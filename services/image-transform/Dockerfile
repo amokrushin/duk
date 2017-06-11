@@ -11,12 +11,11 @@ RUN    apt-get update \
     && cd /srv/app \
     && yarn install --production \
     && yarn cache clean \
-    && apt-get remove --purge -y --force-yes \
+    && apt-get remove --purge -y \
          make \
          gcc \
          g++ \
          python \
-         `apt-mark showauto` \
     && rm -rf \
          /var/lib/apt/lists/* \
          /tmp/*
