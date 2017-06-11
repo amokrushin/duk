@@ -8,7 +8,11 @@ RUN cd /srv/app \
     && yarn cache clean
 
 COPY . /srv/app
-COPY ../shared /srv/shared
+
+RUN cd /srv/app/shared/duk-task-queue \
+    && yarn link \
+    && cd /srv/app \
+    && yarn link duk-task-queue
 
 WORKDIR /srv/app
 

@@ -44,9 +44,6 @@ services:
 
   store:
     build: ./tools/nodemon
-    volumes:
-      - .:/app:ro
-      - ${DUK_STORE_DIR}:${DUK_STORE_DIR}
     command: [nodemon, --trace-warnings, --watch, lib, --watch, shared, --watch, services/store, services/store/app.js]
     env_file:
       - .env
@@ -55,6 +52,9 @@ services:
     environment:
       - AMQP_URL=amqp://${AMQP_USER}:${AMQP_PASS}@rabbitmq/${AMQP_VHOST}
       - REDIS_URL=redis://:${REDIS_PASS}@redis/${REDIS_DB}
+    volumes:
+      - .:/app:ro
+      - ${DUK_STORE_DIR}:${DUK_STORE_DIR}
     networks:
       - duk-network
     depends_on:
@@ -64,13 +64,13 @@ services:
 
   upload:
     build: ./tools/nodemon
-    volumes:
-      - .:/app:ro
     command: [nodemon, --trace-warnings, --watch, lib, --watch, shared, --watch, services/uploads, services/uploads/app.js]
-    env_file:
-      - .env
     expose:
       - "80"
+    env_file:
+      - .env
+    volumes:
+      - .:/app:ro
     networks:
       - duk-network
     depends_on:
@@ -81,14 +81,14 @@ services:
 
   image-transform:
     build: ./tools/nodemon
-    volumes:
-      - .:/app:ro
     command: [nodemon, --trace-warnings, --watch, lib, --watch, shared, --watch, services/image-transform, services/image-transform/app.js]
     env_file:
       - .env
     environment:
       - AMQP_URL=amqp://${AMQP_USER}:${AMQP_PASS}@rabbitmq/${AMQP_VHOST}
       - REDIS_URL=redis://:${REDIS_PASS}@redis/${REDIS_DB}
+    volumes:
+      - .:/app:ro
     networks:
       - duk-network
     depends_on:

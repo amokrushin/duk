@@ -62,15 +62,16 @@ services:
 
   upload:
     build: ./services/uploads
-    env_file:
-      - .env
     expose:
       - "80"
+    env_file:
+      - .env
     networks:
       - duk-network
     depends_on:
       - rabbitmq
       - redis
+      - store
     restart: unless-stopped
 
   image-transform:
