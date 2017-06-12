@@ -1,6 +1,6 @@
 {
   "name": "duk",
-  "version": "0.1.2",
+  "version": "0.1.0",
   "description": "File uploading and processing service",
   "keywords": [
     "uploads"
@@ -15,7 +15,7 @@
   "scripts": {
     "start": "docker-compose up -d",
     "stop": "docker-compose down",
-    "build": "docker-compose -f docker-compose.build.yml build",
+    "build": "docker-compose -f ./docker-compose.build.yml build",
     "logs": "docker-compose logs --tail=10 upload image-transform store",
     "dev-start": "docker-compose -f docker-compose.dev.yml up -d",
     "dev-stop": "docker-compose -f docker-compose.dev.yml down",
