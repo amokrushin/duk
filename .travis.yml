@@ -7,7 +7,7 @@ cache: yarn
 node_js:
   - stable
 env:
-  DOCKER_COMPOSE_VERSION: 1.13.0
+  - DOCKER_COMPOSE_VERSION: 1.13.0
 before_install:
   - sudo apt-get update
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
@@ -22,10 +22,15 @@ before_script:
 script:
   - npm test
 deploy:
-  provider: npm
-  email: anton@mokr.org
-  api_key:
-    secure: DzU1C97r5S1r9Y+coLwbIs8MqUfuz6jR3tga32dnWvlebSMu+ZolydFzWC6XQYwbegMuivrwO+/nyzzKQwr4Vg1GV47O/+A+nhQBCTQbh6XVBUtXYQPjcdi/UeRTpzChzq1vXISimDo42D/2Mnj2KT+duOyBbke6EsSzdrHJCBgJN2mwy55t2Ua3WYlWQNMmfoMO6ZWHS6TzeZotkzS7ECqj1ZuAqykeo54HIJzycf8svh8LLMrdoPUvyzH/+O49z+D0b4AfHTZ+3QiU1O12lG9JhqVgg1GZqa9lUXAgJmPJ/t/qN0up/CTsvBodbSfR3hTep7u3z3xtiKuAdKE7uYg3vZEkCkvhKXrUKRWS5vDx9GVBxo26rUjUbJja78tiO6gQZVduzYP7mCgYzM6G2ICLp422Nyd5X/7anoUwcbPEMmghPZJPVqz/C5jqDDfz4Wg38Do4Z7mOuzUZLfBPUabtClcawOhObDAye2FUGRuOv58uOKeDufSpqRAiJu1X6N70zQmTo4hZ2AQ9OlMBofgpnfjOBqKMXKx7I047RCKI/si53VPQX6WbIW8lOU190BR2BkZcqL68yHiPEBeWAQXZ/RRkJFppDhM0R7Lfjeb/rZ58rDKZU8imPDGcAGaIs/l33h9elr1ak3W2C4dVptWqgSiIn47tl3Z0trgDYrA=
-  on:
-    tags: true
-    repo: amokrushin/duktra
+  - provider: npm
+    email: anton@mokr.org
+    api_key: "$NPM_API_KEY"
+    on:
+      repo: amokrushin/duk
+      tags: true
+  - provider: script
+    script: TRAVIS_TAG=$TRAVIS_TAG ./docker-deploy.sh $DUK_STORE_TRIGGER_URL $DUK_IMAGE_TRANSFORM_TRIGGER_URL $DUK_UPLOADS_TRIGGER_URL
+    skip_cleanup: true
+    on:
+      repo: amokrushin/duk
+      tags: true
