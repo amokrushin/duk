@@ -1,7 +1,7 @@
 {
   "name": "duk-upload",
   "version": "0.1.0",
-  "description": "",
+  "description": "duk-upload",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"
