@@ -31,7 +31,9 @@ deploy:
     api_key: "$NPM_API_KEY"
     on:
       branch: master
+      skip_cleanup: true
   - provider: script
     script: docker-deploy.sh $DUK_STORE_TRIGGER_URL $DUK_IMAGE_TRANSFORM_TRIGGER_URL $DUK_UPLOADS_TRIGGER_URL
     on:
       branch: master
+      skip_cleanup: true
