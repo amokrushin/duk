@@ -30,10 +30,8 @@ deploy:
     email: anton@mokr.org
     api_key: "$NPM_API_KEY"
     on:
-      tags: true
-      all_branches: true
+      branch: master
   - provider: script
     script: docker-deploy.sh $DUK_STORE_TRIGGER_URL $DUK_IMAGE_TRANSFORM_TRIGGER_URL $DUK_UPLOADS_TRIGGER_URL
     on:
-      tags: true
-      all_branches: true
+      branch: master
