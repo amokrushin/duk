@@ -1,6 +1,6 @@
 {
   "name": "duk",
-  "version": "0.1.21",
+  "version": "0.1.22",
   "description": "File uploading and processing service",
   "keywords": [
     "uploads"
