@@ -8,11 +8,14 @@ node_js:
   - stable
 env:
   DOCKER_COMPOSE_VERSION: 1.13.0
+  global:
+    secure: VltzHC4YLPgNuhJHeY490iJ9yEOpXOvJfaWAK9/N7ftEnmgJTkq54XlCKXWeu82I2Opuzyl922DF8kHPy69QqchKze+HYzFhEvpgxNF/GQIuNdH8K2dGhaatPfUl5SuV7elFwmvx+5C0A+fDHViNo0dsDc5nZ16XTZxZJ+yP9Yfjoh3WwlRbqvWF9eDSjry9nm/YFhWIFMEExKq6ZwIu098V152KWEcOec4P3cQi6OSgS+MsdvBivTK7LQNXecGuX0x/y2LQaxLptCcXRf9/vCo9/Iib7OLSRH/t/JVp1UPtmEsgjTw+9MqSRW4UN8GGf/ApqoV8YYWXIkngx3F927URT04I87WRlAiW3oLNKJDjGLjJQw9XiSMFdpZfo+WVa3kwR1387dwOzL3vXLJSVMweahWOEq1dJPMDmoSZMksu3qhD/oKayZ3TrSIWveyWfPJgs+/AYuYKGJo8Fy0M5DjMcODTYaJEP7PprYKcOaKtQD4O8f/C0vFyZ60Aouj7BUEvSFqs2D4G4K9UKZdLgyxYQB3rsgLUsJflrJUNHrs7uRNvR9Es95qYMu6mv+8qTCLrDc+RE/WyOxUOOwGUp1uJrxvp1P+FKS8Nsi7CbkVq0+u7BpFodTWXSUxzqR585RjzsmWBt/h+UkaoTicBZxPxOK/yBPq4cF8QC8qzY4w=
 before_install:
   - sudo apt-get update
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
   - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname
+    -s`-`uname -m` > docker-compose
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
 before_script:
@@ -22,10 +25,15 @@ before_script:
 script:
   - npm test
 deploy:
-  provider: npm
-  email: anton@mokr.org
-  api_key:
-    secure: DzU1C97r5S1r9Y+coLwbIs8MqUfuz6jR3tga32dnWvlebSMu+ZolydFzWC6XQYwbegMuivrwO+/nyzzKQwr4Vg1GV47O/+A+nhQBCTQbh6XVBUtXYQPjcdi/UeRTpzChzq1vXISimDo42D/2Mnj2KT+duOyBbke6EsSzdrHJCBgJN2mwy55t2Ua3WYlWQNMmfoMO6ZWHS6TzeZotkzS7ECqj1ZuAqykeo54HIJzycf8svh8LLMrdoPUvyzH/+O49z+D0b4AfHTZ+3QiU1O12lG9JhqVgg1GZqa9lUXAgJmPJ/t/qN0up/CTsvBodbSfR3hTep7u3z3xtiKuAdKE7uYg3vZEkCkvhKXrUKRWS5vDx9GVBxo26rUjUbJja78tiO6gQZVduzYP7mCgYzM6G2ICLp422Nyd5X/7anoUwcbPEMmghPZJPVqz/C5jqDDfz4Wg38Do4Z7mOuzUZLfBPUabtClcawOhObDAye2FUGRuOv58uOKeDufSpqRAiJu1X6N70zQmTo4hZ2AQ9OlMBofgpnfjOBqKMXKx7I047RCKI/si53VPQX6WbIW8lOU190BR2BkZcqL68yHiPEBeWAQXZ/RRkJFppDhM0R7Lfjeb/rZ58rDKZU8imPDGcAGaIs/l33h9elr1ak3W2C4dVptWqgSiIn47tl3Z0trgDYrA=
-  on:
-    tags: true
-    repo: amokrushin/duktra
+  - provider: npm
+    email: anton@mokr.org
+    api_key:
+      secure: DzU1C97r5S1r9Y+coLwbIs8MqUfuz6jR3tga32dnWvlebSMu+ZolydFzWC6XQYwbegMuivrwO+/nyzzKQwr4Vg1GV47O/+A+nhQBCTQbh6XVBUtXYQPjcdi/UeRTpzChzq1vXISimDo42D/2Mnj2KT+duOyBbke6EsSzdrHJCBgJN2mwy55t2Ua3WYlWQNMmfoMO6ZWHS6TzeZotkzS7ECqj1ZuAqykeo54HIJzycf8svh8LLMrdoPUvyzH/+O49z+D0b4AfHTZ+3QiU1O12lG9JhqVgg1GZqa9lUXAgJmPJ/t/qN0up/CTsvBodbSfR3hTep7u3z3xtiKuAdKE7uYg3vZEkCkvhKXrUKRWS5vDx9GVBxo26rUjUbJja78tiO6gQZVduzYP7mCgYzM6G2ICLp422Nyd5X/7anoUwcbPEMmghPZJPVqz/C5jqDDfz4Wg38Do4Z7mOuzUZLfBPUabtClcawOhObDAye2FUGRuOv58uOKeDufSpqRAiJu1X6N70zQmTo4hZ2AQ9OlMBofgpnfjOBqKMXKx7I047RCKI/si53VPQX6WbIW8lOU190BR2BkZcqL68yHiPEBeWAQXZ/RRkJFppDhM0R7Lfjeb/rZ58rDKZU8imPDGcAGaIs/l33h9elr1ak3W2C4dVptWqgSiIn47tl3Z0trgDYrA=
+    on:
+      tags: true
+      repo: amokrushin/duktra
+  - provider: script
+    script: curl --data build=true -X POST $DOCKER_TRIGGER_URL
+    on:
+      tags: true
+      branch: master

@@ -1,0 +1,92 @@
+version: '3'
+services:  
+  front:
+    build: ./services/nginx
+    ports:
+      - "${PORT}:80"
+    expose:
+      - "80"
+    depends_on:
+      - store
+      - upload
+    networks:
+      - duk-network
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:alpine
+    env_file:
+      - .env
+    ports:
+      - "${RABBITMQ_PORT}:5672"
+    expose:
+      - "5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+    networks:
+      - duk-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    env_file:
+      - .env
+    ports:
+      - "${REDIS_PORT}:6379"
+    expose:
+      - "${REDIS_PORT}"
+    command: redis-server --requirepass ${REDIS_PASS}
+    networks:
+      - duk-network
+    restart: unless-stopped
+
+  store:
+    build: ./services/store
+    env_file:
+      - .env
+    expose:
+      - "80"
+    environment:
+      - AMQP_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq/${RABBITMQ_VHOST}
+      - REDIS_URL=redis://:${REDIS_PASS}@redis/${REDIS_DB}
+    volumes:
+      - ${DUK_STORE_DIR}:${DUK_STORE_DIR}
+    networks:
+      - duk-network
+    depends_on:
+      - rabbitmq
+      - redis
+    restart: unless-stopped
+
+  upload:
+    build: ./services/uploads
+    expose:
+      - "80"
+    env_file:
+      - .env
+    networks:
+      - duk-network
+    depends_on:
+      - rabbitmq
+      - redis
+      - store
+    restart: unless-stopped
+
+  image-transform:
+    build: ./services/image-transform
+    env_file:
+      - .env
+    environment:
+      - AMQP_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@rabbitmq/${RABBITMQ_VHOST}
+      - REDIS_URL=redis://:${REDIS_PASS}@redis/${REDIS_DB}
+    networks:
+      - duk-network
+    depends_on:
+      - rabbitmq
+      - redis
+      - store
+    restart: unless-stopped
+
+networks:
+  duk-network:
