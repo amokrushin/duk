@@ -29,18 +29,17 @@ env:
 script:
   - echo 'skip test'
 deploy:
-  provider: npm
-  email: anton@mokr.org
-  api_key:
-    secure: f1rrd0VW1O9kt4IoxYSKKDogkjnbLFuOFuqSf2jO+Kf38Isdv2zKppnBXmereIbFzu5n99/3Ba0E9capwGZ+CvMUnRqLVBAZO+5Vix+l4Ly17dU7qmzhGyfOvikTwyxJA6HeIiOVLJRcwEfDno+e4v+PprTWvNF9dHcEk0vcwxaNB9WIw1HMTMVYCA5nq0zdAoQKe2usjpJnjRW2iSaew3zqX7yxbZXbKjDTOFVxE15/hAposEaPd1PTVlTfFEHUBQpzD4TzsCCr0AqRfBwdm6B2R+A9FFNqdPbB7j4eKoeN60wCVzZbWHikrfYsMqZBFI0TBohYDk1ac/QfAnsiolpAQiAfB+pmWffh+247QCvycwvX2/AKqx0NJa5ZNxx+wHnNzTM22pHrs7fKa11GYZkOoO7TFTxfWdYmdQges9cOiB+fMVtTydLKUHKhM0HnhTzt0/q2pAYZHgCEDd5+qwl/K6nJXvxG0GCJEnYWH0QH6weSHWTiKmuOBoSLhdoIR65/SscGBESO/ORI6UWdFGg54goEUkM9tj5JA5Bj1x4HeUHompg6QKhSmU8ivuNqrLN7pE3A66zt74iNapLlaFR0gY0PfC2TkTiprbu0PWnu7gftTz+sgLC/NYWuwGjDmctAuR2CthL+zTqYSEjh6snF/M0CXhMowQfY2cvNiSk=
-  on:
-    tags: true
-    repo: amokrushin/duk
-#  - provider: script
-#    script: docker-deploy.sh
-#      $DUK_STORE_TRIGGER_URL
-#      $DUK_IMAGE_TRANSFORM_TRIGGER_URL
-#      $DUK_UPLOADS_TRIGGER_URL
-#    on:
-#      tags: true
-#      branch: master
+  - provider: npm
+    email: anton@mokr.org
+    api_key: "$NPM_API_KEY"
+    on:
+      tags: true
+      repo: amokrushin/duk
+  - provider: script
+    script: docker-deploy.sh
+      $DUK_STORE_TRIGGER_URL
+      $DUK_IMAGE_TRANSFORM_TRIGGER_URL
+      $DUK_UPLOADS_TRIGGER_URL
+    on:
+      tags: true
+      branch: master
