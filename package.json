@@ -15,7 +15,7 @@
   "scripts": {
     "start": "docker-compose up -d",
     "stop": "docker-compose down",
-    "build": "cp -R shared/ services/store/shared/ && cp -R shared/ services/image-transform/shared/ && docker-compose build && rm services/store/shared -rf && rm services/image-transform/shared -rf",
+    "build": "docker-compose build",
     "logs": "docker-compose logs -f --tail=10 upload image-transform store",
     "dev-start": "docker-compose -f docker-compose.dev.yml up -d",
     "dev-stop": "docker-compose -f docker-compose.dev.yml down",
