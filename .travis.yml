@@ -1,6 +1,6 @@
 sudo: required
 services:
-  - docker
+- docker
 language: node_js
 os: linux
 cache: yarn
@@ -9,7 +9,9 @@ node_js:
 env:
   DOCKER_COMPOSE_VERSION: 1.13.0
   global:
-    secure: VltzHC4YLPgNuhJHeY490iJ9yEOpXOvJfaWAK9/N7ftEnmgJTkq54XlCKXWeu82I2Opuzyl922DF8kHPy69QqchKze+HYzFhEvpgxNF/GQIuNdH8K2dGhaatPfUl5SuV7elFwmvx+5C0A+fDHViNo0dsDc5nZ16XTZxZJ+yP9Yfjoh3WwlRbqvWF9eDSjry9nm/YFhWIFMEExKq6ZwIu098V152KWEcOec4P3cQi6OSgS+MsdvBivTK7LQNXecGuX0x/y2LQaxLptCcXRf9/vCo9/Iib7OLSRH/t/JVp1UPtmEsgjTw+9MqSRW4UN8GGf/ApqoV8YYWXIkngx3F927URT04I87WRlAiW3oLNKJDjGLjJQw9XiSMFdpZfo+WVa3kwR1387dwOzL3vXLJSVMweahWOEq1dJPMDmoSZMksu3qhD/oKayZ3TrSIWveyWfPJgs+/AYuYKGJo8Fy0M5DjMcODTYaJEP7PprYKcOaKtQD4O8f/C0vFyZ60Aouj7BUEvSFqs2D4G4K9UKZdLgyxYQB3rsgLUsJflrJUNHrs7uRNvR9Es95qYMu6mv+8qTCLrDc+RE/WyOxUOOwGUp1uJrxvp1P+FKS8Nsi7CbkVq0+u7BpFodTWXSUxzqR585RjzsmWBt/h+UkaoTicBZxPxOK/yBPq4cF8QC8qzY4w=
+    - secure: vghTjaYj2kwKyyIbbF4BfZHUn4/VlAcBcQOQ6gjb/zgOx0wLZmNjLgRE2svOL1pFk7lpAR/IpkrM568i40w1aU97RQR27yYg6h8f5O/P8f0e3Ly9MCRGAflgOp1sgR4BObiZsUmD5EV3rap6+Eeteple3n/QG5LhoY+i6YYoUvaHhuCN8elQ/Rfv0wZ5nBpJ4seZTA1EmWWYhJ4ORpPE5UsTiRJYZ1rCAO0HNULMeLMOHC+uiIunZamIfy7yTg5ph+lijYm3+bPO66iOXnBSBbdAluCmMRRdeWt6wEUhk7U4SkKOpH/fAiQX9lYvsOTwWIR1LvZF7+HJlA1ey++wIZPJV+55KLwAxhlSOe+wHUv1g20BnKUkSfK/pX65uQ4W/IZxQBXimE4WTMEHP6opM7OgP7q1XY+I5ON+Wi4ASB6qYiOaWOJgr0tJttzoSi12/Zw54Uf23komrnpi3o1+XacfGYBXMNa7GPHzywGyddM4GuaY4I/xb6Djr49t7soPi8z1UBnPAa3IQ6/TbpIYPU0xTesyhc2iA0ukIGd+3NmrIdvPzYTvDSxSScdfGD/Sz2NxhkE6FUBPVGPJYx33MSQphl2UU928VcHrCp6eG+OU8a2jXBSi9bDIMUu4Ki1dxg9zMAV/j68HtrwHKWYbSBk39RklVfv06OdmT+h9/x8=
+    - secure: wrCQPNdBo3vFL5/QBEeLfB+kJhLlz5FLupY+lTgomlRewshbMKQuxzPwJPYjXb9HofHeMrBGQMjhqPKBNa5Mh4WNK9hfSSKmfTsw2WUrxZnkP5/YaUEeq8nRVhnL19BuGrtRULosjvn5ZgLX3x1t+rrdYjQYGat+diWjOPyu1g5AUEv73L7HHu6t9XMAKae7TLfiUtSTWdnGHEUvxhs1qWpGWZKHgNc1M+21ysjhnD1ealRAMLUiq18QAi8dJKSaNhTZXoTx9PcYPZlCtIGLOqw1krFl5dsbbsWUIMIan3Jb36SicYpSCE1RaSwFhSvPymK79HDxDUxXxojoVIKFgjAhu7TYs81Vi3sOCfjakEXhiN64K/jk6dboZuk9r3zPCwU0DNCo2uoX9QDNCEdR3OF00dSNZKT/Jar/vNz/TUCpw1UuhT48xeWGEEPihRdUONqDWFwWAd2F04f1WTXPPN5BUlLPtcWCIEoyjh/N0SdI1N3LIlS5t2csSl4G8CIWDUZrQl/gw8Jx3DYfJPN7BCnNNsUVD7JZ1QtwQFEWD7e0xyi9fuvid/cO5IK7yoGW90n64UZ9MF+7xfncYth9iSyKhzuLlHSe9O//Be7Lvmp4FiRfh3DAjyOM/Lw76bPO9gG2LDki5VJM0hJYHn4tO3q8As3kwr/CQltexQr1aYc=
+    - secure: BxttIOZFSqh5y3QOHrwPESmFchrN+bUaC5194XnYFYcARn/gtjOgL765q3+xSgXA6u8v1EBRSqrpwfej7U9CRqDfzLifX361YLJZsxfJlhFrRYhLDt//VlLrGUH7BXuW4gx39nsY3+Lmg+jm6ZVRkb4FtXPXHTVpCXyWDC7rrvqtKKtUU6ZLLC5nDnYeGfCIBL6UObL0Ati2JPXk3G+yFg/biYpMJnU+XNHuS0C2O0emfVY4DJ+fnFgf0dxOlbulaDbek4Sd99X/chq1Vwj3y+0S8mq4wuwD6dHG2v/UzN5ZH0SfwR4ft9YAC13BIvikTzpM8q6UEPTGsnYUjUxt2Wb4i/jrdXP4a42f5FUjtoZXJoLjOvnMtVXVZ4aPDdVyxqEhSXtShtSk70yo7eSj7bUjb0aYxV/b20aT5ncZfISIK0Z9q1luS7oPVgj/2Q9En/G7jFx6S2S85RPjqAU6BFwnZkMkmnl6Jbhx1KxA/xYuF0Nt6ET5GSabq1Rd+wCn9W5lKCziRbh3tTFEtFSzliCHAw4c7FbucuwgtuLFxn69tkB5L+o06Bj85cYEumh/qCatZGGyjcG7qFBMvrRlgnm1nIDrfr7tT9adciM9NWNUp2+QMrHE+Tq0Qtmd8G3XF9p4spNRR6Mkiwdb9j91rc8i7GflmXOvGCMFcG7dGXk=
 before_install:
   - sudo apt-get update
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine
@@ -33,7 +35,10 @@ deploy:
       tags: true
       repo: amokrushin/duktra
   - provider: script
-    script: curl --data build=true -X POST $DOCKER_TRIGGER_URL
+    script: docker-deploy.sh
+      $DUK_STORE_TRIGGER_URL
+      $DUK_IMAGE_TRANSFORM_TRIGGER_URL
+      $DUK_UPLOADS_TRIGGER_URL
     on:
       tags: true
       branch: master
