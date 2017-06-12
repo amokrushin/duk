@@ -33,7 +33,7 @@ deploy:
       branch: master
       skip_cleanup: true
   - provider: script
-    script: ./docker-deploy.sh $DUK_STORE_TRIGGER_URL $DUK_IMAGE_TRANSFORM_TRIGGER_URL $DUK_UPLOADS_TRIGGER_URL
+    script: TRAVIS_TAG=$TRAVIS_TAG ./docker-deploy.sh $DUK_STORE_TRIGGER_URL $DUK_IMAGE_TRANSFORM_TRIGGER_URL $DUK_UPLOADS_TRIGGER_URL
     on:
       branch: master
       skip_cleanup: true
