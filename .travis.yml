@@ -1,6 +1,6 @@
 sudo: required
 services:
-- docker
+  - docker
 language: node_js
 os: linux
 cache: yarn
@@ -30,10 +30,11 @@ deploy:
   - provider: npm
     email: anton@mokr.org
     api_key:
-      secure: DzU1C97r5S1r9Y+coLwbIs8MqUfuz6jR3tga32dnWvlebSMu+ZolydFzWC6XQYwbegMuivrwO+/nyzzKQwr4Vg1GV47O/+A+nhQBCTQbh6XVBUtXYQPjcdi/UeRTpzChzq1vXISimDo42D/2Mnj2KT+duOyBbke6EsSzdrHJCBgJN2mwy55t2Ua3WYlWQNMmfoMO6ZWHS6TzeZotkzS7ECqj1ZuAqykeo54HIJzycf8svh8LLMrdoPUvyzH/+O49z+D0b4AfHTZ+3QiU1O12lG9JhqVgg1GZqa9lUXAgJmPJ/t/qN0up/CTsvBodbSfR3hTep7u3z3xtiKuAdKE7uYg3vZEkCkvhKXrUKRWS5vDx9GVBxo26rUjUbJja78tiO6gQZVduzYP7mCgYzM6G2ICLp422Nyd5X/7anoUwcbPEMmghPZJPVqz/C5jqDDfz4Wg38Do4Z7mOuzUZLfBPUabtClcawOhObDAye2FUGRuOv58uOKeDufSpqRAiJu1X6N70zQmTo4hZ2AQ9OlMBofgpnfjOBqKMXKx7I047RCKI/si53VPQX6WbIW8lOU190BR2BkZcqL68yHiPEBeWAQXZ/RRkJFppDhM0R7Lfjeb/rZ58rDKZU8imPDGcAGaIs/l33h9elr1ak3W2C4dVptWqgSiIn47tl3Z0trgDYrA=
+      secure: W1jy4onUQ0HfuyqIrM9gui2Ieyo4r4uF8FQkY4v4T/SQzM9R4Yx/EhVnvilD8tyUZa+jV7lwP78zFoLbL6kqe7n9n6epwFoPgr6W2WlVAOD0oLrk19T+xkFR3hGKRxvVyNSLbyQxnohGlYz+/mwqP6nDTpSlgDZjhcmVCYk+Xx4PCOAYQnzAUJBsKzXpH00+T9dPPgPUjzsACNdCOq1Y0QFWxNcs+mtcUSQw0fGRKl2nVf70VU/OEnZX62NwTsHn3WR1Xb7YiasqTetDNc1dFcy70gVDSm85XGTkOh/N/muVRMMyYCOjdw3PFRzsM5KAm7oWM0WkE6fG4JuhfRaH22b+xPQDAnj614yDX9zjHVbkLaxskgo2sjUkYA2i+oujjxpyscD+FN/JhHPXZuH15j6DuqVdF7IgqFmeFHVHhs+P8vWSRew2eHPS3YukPlvCQa+3l1qwfzJYh/i6jcXle99sjyUPLfQvAb0ed78DyhPN7SZohxBc51u5tMJWKrCrLe0VO1v2F93cQrVS5qqXYueEUebbUuBPX2uDcJ0cXvAsekE03lomS21X/e/IDqfeakoCp/qsZtRAyxBGRYhUqkztSt20P+oMFZv4TTJS9cBeDe3qUuVaKfnAu2zgZxPSlwauW6sIi9/T8G59w4ZzTVWId4B8L1m9/3uUS2AISe0=
     on:
       tags: true
-      repo: amokrushin/duktra
+      repo: amokrushin/duk
+      branch: master
   - provider: script
     script: docker-deploy.sh
       $DUK_STORE_TRIGGER_URL
@@ -41,4 +42,5 @@ deploy:
       $DUK_UPLOADS_TRIGGER_URL
     on:
       tags: true
+      repo: amokrushin/duk
       branch: master
