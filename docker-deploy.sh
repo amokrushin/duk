@@ -5,7 +5,7 @@ echo "Tag $TRAVIS_TAG"
 
 for var in "$@"
 do
-    curl -X POST "$1" \
+    curl -X POST "$var" \
         -H "Content-Type: application/json" \
         --data '{"source_type": "Tag", "source_name": "'$TRAVIS_TAG'"}'
 done
