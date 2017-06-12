@@ -29,18 +29,18 @@ env:
 script:
   - echo 'skip test'
 deploy:
-  - provider: npm
-    email: anton@mokr.org
-    api_key:
-      secure: W1jy4onUQ0HfuyqIrM9gui2Ieyo4r4uF8FQkY4v4T/SQzM9R4Yx/EhVnvilD8tyUZa+jV7lwP78zFoLbL6kqe7n9n6epwFoPgr6W2WlVAOD0oLrk19T+xkFR3hGKRxvVyNSLbyQxnohGlYz+/mwqP6nDTpSlgDZjhcmVCYk+Xx4PCOAYQnzAUJBsKzXpH00+T9dPPgPUjzsACNdCOq1Y0QFWxNcs+mtcUSQw0fGRKl2nVf70VU/OEnZX62NwTsHn3WR1Xb7YiasqTetDNc1dFcy70gVDSm85XGTkOh/N/muVRMMyYCOjdw3PFRzsM5KAm7oWM0WkE6fG4JuhfRaH22b+xPQDAnj614yDX9zjHVbkLaxskgo2sjUkYA2i+oujjxpyscD+FN/JhHPXZuH15j6DuqVdF7IgqFmeFHVHhs+P8vWSRew2eHPS3YukPlvCQa+3l1qwfzJYh/i6jcXle99sjyUPLfQvAb0ed78DyhPN7SZohxBc51u5tMJWKrCrLe0VO1v2F93cQrVS5qqXYueEUebbUuBPX2uDcJ0cXvAsekE03lomS21X/e/IDqfeakoCp/qsZtRAyxBGRYhUqkztSt20P+oMFZv4TTJS9cBeDe3qUuVaKfnAu2zgZxPSlwauW6sIi9/T8G59w4ZzTVWId4B8L1m9/3uUS2AISe0=
-    on:
-      tags: true
-      repo: amokrushin/duk
-  - provider: script
-    script: docker-deploy.sh
-      $DUK_STORE_TRIGGER_URL
-      $DUK_IMAGE_TRANSFORM_TRIGGER_URL
-      $DUK_UPLOADS_TRIGGER_URL
-    on:
-      tags: true
-      branch: master
+  provider: npm
+  email: anton@mokr.org
+  api_key:
+    secure: W1jy4onUQ0HfuyqIrM9gui2Ieyo4r4uF8FQkY4v4T/SQzM9R4Yx/EhVnvilD8tyUZa+jV7lwP78zFoLbL6kqe7n9n6epwFoPgr6W2WlVAOD0oLrk19T+xkFR3hGKRxvVyNSLbyQxnohGlYz+/mwqP6nDTpSlgDZjhcmVCYk+Xx4PCOAYQnzAUJBsKzXpH00+T9dPPgPUjzsACNdCOq1Y0QFWxNcs+mtcUSQw0fGRKl2nVf70VU/OEnZX62NwTsHn3WR1Xb7YiasqTetDNc1dFcy70gVDSm85XGTkOh/N/muVRMMyYCOjdw3PFRzsM5KAm7oWM0WkE6fG4JuhfRaH22b+xPQDAnj614yDX9zjHVbkLaxskgo2sjUkYA2i+oujjxpyscD+FN/JhHPXZuH15j6DuqVdF7IgqFmeFHVHhs+P8vWSRew2eHPS3YukPlvCQa+3l1qwfzJYh/i6jcXle99sjyUPLfQvAb0ed78DyhPN7SZohxBc51u5tMJWKrCrLe0VO1v2F93cQrVS5qqXYueEUebbUuBPX2uDcJ0cXvAsekE03lomS21X/e/IDqfeakoCp/qsZtRAyxBGRYhUqkztSt20P+oMFZv4TTJS9cBeDe3qUuVaKfnAu2zgZxPSlwauW6sIi9/T8G59w4ZzTVWId4B8L1m9/3uUS2AISe0=
+  on:
+    tags: true
+    repo: amokrushin/duk
+#  - provider: script
+#    script: docker-deploy.sh
+#      $DUK_STORE_TRIGGER_URL
+#      $DUK_IMAGE_TRANSFORM_TRIGGER_URL
+#      $DUK_UPLOADS_TRIGGER_URL
+#    on:
+#      tags: true
+#      branch: master
